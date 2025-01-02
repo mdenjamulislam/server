@@ -38,6 +38,15 @@ async function run() {
             res.send(services);
         });
 
+        // get all service title
+        app.get('/services/title', async (req, res) => {
+            const cursor = serviceCollection.find({});
+            const services = await cursor.toArray();
+            const titles = services.map(service => service.title);
+            res.send(titles);
+        });
+
+
         // get individual service
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
@@ -45,6 +54,7 @@ async function run() {
             const service = await serviceCollection.findOne(query);
             res.send(service);
         });
+
 
         // get all teams
         app.get('/teams', async (req, res) => {
