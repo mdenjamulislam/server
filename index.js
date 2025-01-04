@@ -31,6 +31,7 @@ async function run() {
 
         const serviceCollection = client.db('carDoctor').collection('Services');
         const teamCollection = client.db('carDoctor').collection('teams');
+        const bookingCollection = client.db('carDoctor').collection('booking');
 
         app.get('/services', async (req, res) => {
             const cursor = serviceCollection.find({});
@@ -59,7 +60,7 @@ async function run() {
         app.get('/checkout/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
-            const options = { projection: { title: 1, price: 1, service_id: 1 } };
+            const options = { projection: { title: 1, price: 1, service_id: 1, img: 1 } };
             const service = await serviceCollection.findOne(query, options);
             res.send(service);
         });
@@ -70,7 +71,15 @@ async function run() {
             const cursor = teamCollection.find({});
             const teams = await cursor.toArray();
             res.send(teams);
+        });
+
+        // booking
+        app.post('/booking', async (req, res) => {
+            const booking = req.body;
+            const result = await bookingCollection.insertOne(booking);
+            res.send(result);
         })
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
