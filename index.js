@@ -42,8 +42,8 @@ async function run() {
         app.get('/services/title', async (req, res) => {
             const cursor = serviceCollection.find({});
             const services = await cursor.toArray();
-            const titles = services.map(service => service.title);
-            res.send(titles);
+            const titlesWithId = services.map(service => ({ _id: service._id, title: service.title }));
+            res.send(titlesWithId);
         });
 
 
@@ -52,6 +52,15 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const service = await serviceCollection.findOne(query);
+            res.send(service);
+        });
+
+        // get a service for chekout
+        app.get('/checkout/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { projection: { title: 1, price: 1, service_id: 1 } };
+            const service = await serviceCollection.findOne(query, options);
             res.send(service);
         });
 
