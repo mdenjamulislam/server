@@ -78,7 +78,19 @@ async function run() {
             const booking = req.body;
             const result = await bookingCollection.insertOne(booking);
             res.send(result);
-        })
+        });
+
+        app.get('/booking', async (req, res) => {
+            let query = {};
+            if (req.query?.email) {
+                query = {email: req.query.email}
+            }
+            const cursor = bookingCollection.find(query);
+            const booking = await cursor.toArray();
+            res.send(booking);
+        });
+        
+        
 
 
         // Send a ping to confirm a successful connection
